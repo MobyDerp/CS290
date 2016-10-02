@@ -1,0 +1,5 @@
+Hello! 
+I'm a student at Oregon State University.  I am doing the OSU post bac for Computer Science.  For Fall 2016, I am taking CS290 (web development) and CS261 (data structures). 
+
+Thanks,
+Lisa Le
