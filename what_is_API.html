@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Basic Page Needs –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>How-to-API: Bureau Labor of Statistics</title>
+  <meta name="Guide on how to be able to use BLS data" content="">
+  <meta name="Lisa Le" content="">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+
+  <!-- CSS –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="./css/style.css">
+
+</head>
+<body>
+  <!-- Static navbar -->
+  <nav>
+    <ul>
+      <li>
+          <a href="home.html">Home</a>
+      </li>
+      <li>
+          <a href="what_is_API.html">What is API</a>
+      </li>
+      <li>
+          <a href="series_id.html">Series ID info</a>
+      </li>
+      <li>
+          <a href="single_series.html">Single Series</a>
+      </li>
+      <li>
+          <a href="multiple_series.html">Multiple Series</a>
+      </li>
+    </ul>
+  </nav>
+
+
+
+<div class="container">
+  <h1>What is an Application Program Interface (API)? </h1>
+    <p> It is essentially a <em> contract </em> provided by one piece of software to another software.  The API that we are looking at is for the Bureau Labor of Statistics.  We will be sending a message to <a href = "http://www.bls.gov/" target = "_blank">  bsl.gov</a> API.  The bsl.gov responds with a structured response. </p>
+
+    <p>One can get data from a website within an API.  However, with an API, the structure of the request and resopnse is documented upfront by <a href = "http://www.bls.gov/" target = "_blank">  bsl.gov</a> and is likely to remain constant even if the website undergoes a make-over.</p>
+    <break>
+    <p> Here's a great video on YouTube which explains what an API in layman term. </p>
+      <iframe width="420" height="315"src="https://www.youtube.com/embed/s7wmiS2mSXY"> </iframe>
+</div>
+
+<break>
+  <p>You will have noticed that when you browse through Sample Codes on<a href = "http://www.bls.gov/developers/api_sample_code.htm" target = "_blank">bsl.gov</a>, you may have noticed that JavaScript is missing.  You may wonder, "Gee, why isn't JavaScript offered here?"</p>
+
+  <break>
+
+  <p> I though that perhaps they haven't gotten to writing sample codes for JavaScript.  I went down the trail of developing sample code for javascript using AJAX.  I got this far: </p>
+  <pre><code>
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;script&gt;
+        var bslURL = 'http://api.bls.gov/publicAPI/v2/timeseries/data/';
+        var bslSeriesID = 'LAUCN040010000000005';
+
+        var payload;
+        /* Process to format URLs for submission base url + api key + parameters*/
+        payload = bslURL + bslSeriesID;
+
+        var request = new XMLHttpRequest();
+
+        request.open('GET', payload, true);
+        request.setRequestHeader("Content-Type","application/json");
+        request.addEventListener('load',function()
+        {
+          if(req.status >= 200 && req.status < 400){
+            var response = JSON.parse(req.responseText);
+            console.log(response);
+          } else {
+            console.log('Error in network request: ' + req.statusText);
+          }
+        });
+
+        request.send(null);
+        &lt;/script&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  </code></pre>
+
+  <br>
+    <p>If you copy and paste and try to run this locally, you will get the following error message: </p>
+    <img src="images/error_message.png" alt="access error"/>
+  <br>
+  <br>
+    <p>If you dig a little deeper by pulling up developer tools, you will find the following about the BLS request header</p>
+    <img src="images/BLS_request_header.png" alt="BLS request header"/>
+    <p>This essentially tells you that the BLS is not allowing <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing" target="_blank">cross-origin request<a> by <code> Access-Control-Allow-Origin: </code> .  If it did, you would have saw the following in the header </p>
+    <pre>
+      Access-Control-Allow-Origin: *
+    </pre>
+    <p>Therefore, we cannot retrieve data using AJAX and must use <em> server-side GET request </em> to retreive the data.  But, first, we will need basic information, which are Series Id to pull the data, which will be discussed next.</p>
+
+  <a class="button button-primary" href="series_id.html">Next: How to get Series Id </a>
+
+
+</body>
+</html>
