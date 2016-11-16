@@ -95,9 +95,7 @@
     <p>If you dig a little deeper by pulling up developer tools, you will find the following about the BLS request header</p>
     <img src="images/BLS_request_header.png" alt="BLS request header"/>
     <p>This essentially tells you that the BLS is not allowing <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing" target="_blank">cross-origin request<a> by <code> Access-Control-Allow-Origin: </code> .  If it did, you would have saw the following in the header </p>
-    <pre>
-      Access-Control-Allow-Origin: *
-    </pre>
+    <pre>Access-Control-Allow-Origin: *</pre>
     <p>Therefore, we cannot retrieve data using AJAX and must use <em> server-side GET request </em> to retreive the data.  But, first, we will need basic information, which are Series Id to pull the data, which will be discussed next.</p>
 
   <a class="button button-primary" href="series_id.html">Next: How to get Series Id </a>
