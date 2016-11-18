@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Basic Page Needs –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>How-to-API: Bureau Labor of Statistics</title>
+  <meta name="Guide on how to be able to use BLS data" content="">
+  <meta name="Lisa Le" content="">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+
+  <!-- CSS –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="./css/style.css">
+
+</head>
+<body>
+
+  <nav>
+    <ul>
+      <li>
+          <a href="index.html">Home</a>
+      </li>
+      <li>
+          <a href="what_is_API.html">What is API</a>
+      </li>
+      <li>
+          <a href="series_id.html">Series ID info</a>
+      </li>
+      <li>
+          <a href="single_series.html">Single Series</a>
+      </li>
+      <li>
+          <a href="multiple_series.html">Multiple Series</a>
+      </li>
+      <li>
+        <a href="formatting_data.html">Next: Formatting Data </a>
+      </li>
+    </ul>
+  </nav>
+
+
+<div class="container">
+  <h1>How to Pull Muliple Series</h1>
+  <p>But, first, you'll need to obtain an API key, which is easy-peasy. You will need to visit register at <a href="http://data.bls.gov/registrationEngine/" target="_blank"> http://data.bls.gov/registrationEngine/</a></p>
+  <img src="images/register_API_key.png" width="346" height="246" alt="screenshot of signup form"/>
+</div>
+  <p>A few advantages of having an API key are <p>
+    <ul>
+      <li>Offers greater query limits</li>
+      <li>Request net and percent changes </li>
+      <li>Series description information</li>
+    </ul>
+  <br>
+  <p>The coding, however, need to change in order to accomdate the multiple series. In addition, the example below, we will be quering for years 2010 to 2016.  Note: Without an API key, the default for data pull is for 3 years timeframe. If you replace the <code>app.get</code> with the one below you can run data for 2 series.
+  <pre>
+    app.get('/',function(req,res){
+      var context = {};
+      request({
+            "url":"http://api.bls.gov/publicAPI/v2/timeseries/data/",
+            "method":"POST",
+            "headers":{
+              "Content-Type":"application/json"
+            },
+            body: '{"seriesid":["APU0000710212", "APU0000710411"], "startyear":"2010", "endyear":"2016", "period" = "M09", "calculations": true}'}, handlePost)
+
+      function handlePost(err, response, body){
+        if(!err && response.statusCode < 400){
+          context.bls = body;
+    	    res.render('post', context);
+          console.log(body);
+        } else {
+          console.log(err);
+          console.log(response.statusCode);
+        }
+      }
+    });
+  </pre>
+
+  <p> You will notice that this <code>request</code> is much more complicated than for the single series.  The url, method, header, and body information can be traced to the screenshot below, which can be found on the BLS website</p>
+    <img src="images/multiple_series_parameters.png" alt="multiple series parameters"/>
+  <p>Our self-constructed <code>handlePost</code> function is essentially saying that if there aren't any errors and the reponse of the Status Code is less than 400, then the <code>context.bls = body</code>.  Then, we will display on to our post handlebar.</p>
+
+  <p> Here is the code for our <code> Post </code>
+  <pre> &lt;h1&gt;You sent the following data in a POST request: {{bls}}&lt;/h1&gt;</pre>
+
+    <p>This is the response that we will receive via our webpage.  I tweaked this a little bit just to show 2016 so that you can see both APU0000710212(ice cream) and APU0000710411 (cheese).  Unfortunately, the data we return will not tell us what these series id; therefore, you have to remember what these series id stand for.</p>
+    <img src="images/multiple_results.png" width="703" height="398" alt="BLS multiple requests"/>
+  <br>
+  <br>
+  <a href="Multiple_Series">Next: Formatting data output</a>
+
+</body>
+</html>

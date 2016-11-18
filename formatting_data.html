@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Basic Page Needs –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>How-to-API: Bureau Labor of Statistics</title>
+  <meta name="Guide on how to be able to use BLS data" content="">
+  <meta name="Lisa Le" content="">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+  <!-- CSS –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="./css/style.css">
+
+</head>
+<body>
+
+  <nav>
+    <ul>
+      <li>
+          <a href="index.html">Home</a>
+      </li>
+      <li>
+          <a href="what_is_API.html">What is API</a>
+      </li>
+      <li>
+          <a href="series_id.html">Series ID info</a>
+      </li>
+      <li>
+          <a href="single_series.html">Single Series</a>
+      </li>
+      <li>
+          <a href="multiple_series.html">Multiple Series</a>
+      </li>
+      <li>
+        <a href="formatting_data.html">Next: Formatting Data </a>
+      </li>
+    </ul>
+  </nav>
+
+
+<div class="container">
+  <h1>Formatting the data response</h1>
+  <p>The JSON strcuture for series id APU0000710212 (Chedder cheese, natural(cost/lb)) is shown below: </p>
+  <img src="images/json_response.png" alt="json response"/>
+  <p>I took the results from my data ouput from the previous page and pasted it in  <a href="http://data.bls.gov/registrationEngine/" target="_blank"> http://json.parser.online.fr/ </a> to better visualize the data.
+</div>
+<p>My birthday is in October and say I want to pig out every october with ice cream and cheeder cheese.  I want to be able to see <em> easily </em> see the prices in October for these two ideas for the past 6 years.  First, let's start out with baby step and just look at for Cheese in Oct 2016. </p>
+
+<p>We will have to tweak the <code>handlePost</code> function.</p>
+
+  <pre>
+    function handlePost(err, response, body){
+        if(!err && response.statusCode < 400){
+
+        //parse the JSON string and save it to a variable
+        var info = JSON.parse(body);
+
+        // Create a loop to iterate through each of the series in the JSON object
+        for (var i in info.Results.series)
+        {
+          // Log the catalog title for each series
+          if (i == 0) console.log ("Oct Average US city price - Chedder Cheese per lb ")
+          else console.log ("Oct Averge US city price - Ice Cream per 1/2 gal.")
+
+          // For each year, log the year and the value for that year
+          for (var j in info.Results.series[i].data)
+          {
+            //M10 represents the month of October
+            if (info.Results.series[i].data[j].period == "M10")
+            {
+              var year = info.Results.series[i].data[j].year;
+              var value = info.Results.series[i].data[j].value;
+              console.log("    " + year + ": " + value);
+            }
+          }
+        }
+          context.bls = body;
+          res.render('post', context);
+        } else {
+          console.log(err);
+          console.log(response.statusCode);
+        }
+      }
+  </pre>
+
+<p>The code above is doing the following:
+  <ul>JSON.parse(body) converts the data into an organized JSON object and store that in variable <code>info</code></ul>
+  <ul>There's a header for each series to identify the information -- Ice Cream or Chedder Cheese </ul>
+  <ul>For each specific piece of data within each series, <code>info.Results.series[j].data</code> I ensure that the data period is M10, the October price, before storing the year and value in variable</uL>
+  <ul>log result to console</ul>
+  If you copy and paste the the code above and run node, you should get the following: </p>
+  <img src="images/yearly_average_oct_comparison.png" alt="oct comparison"/>
+
+  <p>Hopefully this tutorial has helped you understand how to pull data via node.js! </p>
+
+
+</body>
+</html>
